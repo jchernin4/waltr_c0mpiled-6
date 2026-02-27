@@ -9,6 +9,7 @@ import "./globals.css";
 
 export default function Home() {
 	const [latex, setLatex] = useState<string | null>(null);
+	const [context, setContext] = useState<string>("");
 	const [erasing, setErasing] = useState(false);
 	const [strokeWidth, setStrokeWidth] = useState(4);
 	const [eraserWidth, setEraserWidth] = useState(16);
@@ -42,9 +43,20 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[auto_1fr_auto] bg-white">
+		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[auto_auto_1fr_auto] bg-white">
+			{/* Context box */}
+			<div className="col-span-2 row-start-1 px-6 pt-4 pb-2 bg-zinc-100 dark:bg-zinc-900">
+				<textarea
+					placeholder="Add context..."
+					value={context}
+					onChange={(e) => setContext(e.target.value)}
+					rows={4}
+					className="w-full px-3 py-2 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-sm resize-none"
+				/>
+			</div>
+
 			{/* Toolbar */}
-			<header className="col-span-2 row-start-1 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 py-2">
+			<header className="col-span-2 row-start-2 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 pb-2">
 				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
 				<button onClick={async () => {
 					if (!canvasRef.current) return;
@@ -68,7 +80,7 @@ export default function Home() {
 				</label>
 			</header>
 
-			<main className="col-start-1 row-start-2 relative">
+			<main className="col-start-1 row-start-3 relative">
 				<div
 					className="sketchWrap absolute inset-0"
 					style={{ cursor: erasing ? "none" : "default" }}
@@ -108,12 +120,12 @@ export default function Home() {
 			</main>
 
 			{/* Preview area*/}
-			<aside className="col-start-2 row-start-2 w-64 bg-zinc-200 dark:bg-zinc-800">
+			<aside className="col-start-2 row-start-3 w-64 bg-zinc-200 dark:bg-zinc-800">
 				{latex && <BlockMath math={latex} />}
 			</aside>
 
 			{/* LLM Response */}
-			<footer className="col-span-2 row-start-3 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
+			<footer className="col-span-2 row-start-4 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
 			</footer>
 		</div>
 	);
