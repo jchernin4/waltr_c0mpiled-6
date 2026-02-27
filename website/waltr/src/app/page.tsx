@@ -42,7 +42,7 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[1fr_auto] bg-white dark:bg-black">
+		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[1fr_auto] bg-white">
 			<main className="col-start-1 row-start-1 relative">
 				<div
 					className="sketchWrap absolute inset-0"
@@ -59,7 +59,7 @@ export default function Home() {
 						allowOnlyPointerType="pen"
 						width="100%"
 						height="100%"
-						canvasColor="transparent"
+						canvasColor="#000000"
 						strokeColor="#ffffff"
 						strokeWidth={strokeWidth}
 						eraserWidth={eraserWidth}
