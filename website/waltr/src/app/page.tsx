@@ -42,8 +42,33 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[1fr_auto] bg-white">
-			<main className="col-start-1 row-start-1 relative">
+		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[auto_1fr_auto] bg-white">
+			{/* Toolbar */}
+			<header className="col-span-2 row-start-1 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 py-2">
+				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
+				<button onClick={async () => {
+					if (!canvasRef.current) return;
+					const dataUrl = await canvasRef.current.exportImage("png");
+					const a = document.createElement("a");
+					a.href = dataUrl;
+					a.download = "canvas.png";
+					a.click();
+				}}>Save Image</button>
+				<label className="flex items-center gap-2">
+					Pen size
+					<input type="range" min={1} max={32} value={strokeWidth}
+						onChange={(e) => setStrokeWidth(Number(e.target.value))} />
+					{strokeWidth}px
+				</label>
+				<label className="flex items-center gap-2">
+					Eraser size
+					<input type="range" min={1} max={64} value={eraserWidth}
+						onChange={(e) => setEraserWidth(Number(e.target.value))} />
+					{eraserWidth}px
+				</label>
+			</header>
+
+			<main className="col-start-1 row-start-2 relative">
 				<div
 					className="sketchWrap absolute inset-0"
 					style={{ cursor: erasing ? "none" : "default" }}
@@ -83,33 +108,12 @@ export default function Home() {
 			</main>
 
 			{/* Preview area*/}
-			<aside className="col-start-2 row-start-1 w-64 bg-zinc-200 dark:bg-zinc-800">
+			<aside className="col-start-2 row-start-2 w-64 bg-zinc-200 dark:bg-zinc-800">
 				{latex && <BlockMath math={latex} />}
 			</aside>
 
 			{/* LLM Response */}
-			<footer className="col-span-2 row-start-2 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
-				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
-			<button onClick={async () => {
-				if (!canvasRef.current) return;
-				const dataUrl = await canvasRef.current.exportImage("png");
-				const a = document.createElement("a");
-				a.href = dataUrl;
-				a.download = "canvas.png";
-				a.click();
-			}}>Save Image</button>
-				<label className="flex items-center gap-2">
-					Pen size
-					<input type="range" min={1} max={32} value={strokeWidth}
-						onChange={(e) => setStrokeWidth(Number(e.target.value))} />
-					{strokeWidth}px
-				</label>
-				<label className="flex items-center gap-2">
-					Eraser size
-					<input type="range" min={1} max={64} value={eraserWidth}
-						onChange={(e) => setEraserWidth(Number(e.target.value))} />
-					{eraserWidth}px
-				</label>
+			<footer className="col-span-2 row-start-3 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
 			</footer>
 		</div>
 	);
