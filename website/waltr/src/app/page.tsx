@@ -90,6 +90,14 @@ export default function Home() {
 			{/* LLM Response */}
 			<footer className="col-span-2 row-start-2 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
 				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
+			<button onClick={async () => {
+				if (!canvasRef.current) return;
+				const dataUrl = await canvasRef.current.exportImage("png");
+				const a = document.createElement("a");
+				a.href = dataUrl;
+				a.download = "canvas.png";
+				a.click();
+			}}>Save Image</button>
 				<label className="flex items-center gap-2">
 					Pen size
 					<input type="range" min={1} max={32} value={strokeWidth}
