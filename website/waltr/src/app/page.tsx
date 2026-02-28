@@ -10,7 +10,7 @@ import "./globals.css";
 
 export default function Home() {
 	const [latex, setLatex] = useState<string | null>(null);
-	const [context, setContext] = useState<string>("");
+	const [context, setContext] = useState<string>("Solve this derivative problem. d/dx (2x^3 + cos(x) - 3)");
 	const [llmResponse, setLlmResponse] = useState<string | null>(null);
 	const [llmLoading, setLlmLoading] = useState(false);
 	const [erasing, setErasing] = useState(false);
@@ -30,6 +30,9 @@ export default function Home() {
 		if (!latex) return;
 		setLlmLoading(true);
 		setLlmResponse(null);
+		// Unlock iOS speech synthesis synchronously within the user gesture
+		window.speechSynthesis.cancel();
+		window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
 		const userMessage = [
 			context ? `Problem context: ${context}` : null,
 			`LaTeX expression: ${latex}`,
@@ -45,8 +48,12 @@ export default function Home() {
 				{ role: "user", content: userMessage },
 			],
 		});
-		setLlmResponse(completion.choices[0]?.message?.content ?? "No response.");
+		const text = completion.choices[0]?.message?.content ?? "No response.";
+		setLlmResponse(text);
 		setLlmLoading(false);
+		const utterance = new SpeechSynthesisUtterance(text);
+		window.speechSynthesis.cancel();
+		window.speechSynthesis.speak(utterance);
 	}
 
 	useEffect(() => {
