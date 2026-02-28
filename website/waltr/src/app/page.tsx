@@ -69,9 +69,14 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[auto_auto_1fr_auto] bg-white">
+		<div className="grid h-screen w-screen grid-cols-[1fr_auto] grid-rows-[auto_auto_auto_1fr_auto] bg-white">
+			{/* Site name */}
+			<div className="col-span-2 row-start-1 px-6 pt-4 pb-1 bg-zinc-100 dark:bg-zinc-900">
+				<h1 className="text-2xl font-bold tracking-tight">Waltr</h1>
+			</div>
+
 			{/* Context box */}
-			<div className="col-span-2 row-start-1 px-6 pt-4 pb-2 bg-zinc-100 dark:bg-zinc-900">
+			<div className="col-span-2 row-start-2 px-6 pt-2 pb-2 bg-zinc-100 dark:bg-zinc-900">
 				<textarea
 					placeholder="Add context..."
 					value={context}
@@ -82,7 +87,7 @@ export default function Home() {
 			</div>
 
 			{/* Toolbar */}
-			<header className="col-span-2 row-start-2 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 pb-2">
+			<header className="col-span-2 row-start-3 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 pb-2">
 				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
 				<button onClick={handleHelp} disabled={!latex || llmLoading}>
 					{llmLoading ? "Thinking..." : "Help"}
@@ -109,7 +114,7 @@ export default function Home() {
 				</label>
 			</header>
 
-			<main className="col-start-1 row-start-3 relative">
+			<main className="col-start-1 row-start-4 relative">
 				<div
 					className="sketchWrap absolute inset-0"
 					style={{ cursor: erasing ? "none" : "default" }}
@@ -149,12 +154,12 @@ export default function Home() {
 			</main>
 
 			{/* Preview area*/}
-			<aside className="col-start-2 row-start-3 w-64 bg-zinc-200 dark:bg-zinc-800">
+			<aside className="col-start-2 row-start-4 w-64 bg-zinc-200 dark:bg-zinc-800">
 				{latex && <BlockMath math={latex} />}
 			</aside>
 
 			{/* LLM Response */}
-			<footer className="col-span-2 row-start-4 h-48 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto px-6 py-4 text-sm">
+			<footer className="col-span-2 row-start-5 h-48 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto px-6 py-4 text-md">
 				{llmResponse ?? <span className="text-zinc-400">Response will appear here.</span>}
 			</footer>
 		</div>
