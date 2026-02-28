@@ -83,13 +83,13 @@ export default function Home() {
 			</div>
 
 			{/* Context box */}
-			<div className="col-span-2 row-start-2 px-6 pt-2 pb-2 bg-zinc-100 dark:bg-zinc-900">
+			<div className="col-span-2 row-start-2 px-6 pt-2 pb-2 bg-zinc-100 dark:bg-zinc-900 text-md">
 				<textarea
 					placeholder="Add context..."
 					value={context}
 					onChange={(e) => setContext(e.target.value)}
 					rows={4}
-					className="w-full px-3 py-2 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-sm resize-none"
+					className="w-full px-3 py-2 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-2xl resize-none"
 				/>
 			</div>
 
