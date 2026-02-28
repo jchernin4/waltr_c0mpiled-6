@@ -2,6 +2,7 @@
 
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useEffect, useRef, useState } from "react";
+import OpenAI from "openai";
 import React from "react";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
@@ -10,6 +11,8 @@ import "./globals.css";
 export default function Home() {
 	const [latex, setLatex] = useState<string | null>(null);
 	const [context, setContext] = useState<string>("");
+	const [llmResponse, setLlmResponse] = useState<string | null>(null);
+	const [llmLoading, setLlmLoading] = useState(false);
 	const [erasing, setErasing] = useState(false);
 	const [strokeWidth, setStrokeWidth] = useState(4);
 	const [eraserWidth, setEraserWidth] = useState(16);
@@ -21,6 +24,29 @@ export default function Home() {
 		const next = !erasing;
 		setErasing(next);
 		canvasRef.current?.eraseMode(next);
+	}
+
+	async function handleHelp() {
+		if (!latex) return;
+		setLlmLoading(true);
+		setLlmResponse(null);
+		const userMessage = [
+			context ? `Problem context: ${context}` : null,
+			`LaTeX expression: ${latex}`,
+		].filter(Boolean).join("\n");
+		const client = new OpenAI({
+			apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+			dangerouslyAllowBrowser: true,
+		});
+		const completion = await client.chat.completions.create({
+			model: "gpt-5-mini",
+			messages: [
+				{ role: "system", content: "You are a helpful math tutor. The user will provide a handwritten math expression parsed as LaTeX, along with optional context. Help them understand the problem and/or hint towards the best next step for them to take. Try not to give them the answer if possible. Their text is parsed using OCR and may incorrectly parse some characters (ex. 'x' may show as 'X' or mean a multiplication sign). Use context to determine what the user meant. All of your output will be read by the user, so do not include anything about OCR or LaTeX. Be conversational and helpful." },
+				{ role: "user", content: userMessage },
+			],
+		});
+		setLlmResponse(completion.choices[0]?.message?.content ?? "No response.");
+		setLlmLoading(false);
 	}
 
 	useEffect(() => {
@@ -58,6 +84,9 @@ export default function Home() {
 			{/* Toolbar */}
 			<header className="col-span-2 row-start-2 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6 pb-2">
 				<button onClick={toggleEraser}>{erasing ? "Pen" : "Eraser"}</button>
+				<button onClick={handleHelp} disabled={!latex || llmLoading}>
+					{llmLoading ? "Thinking..." : "Help"}
+				</button>
 				<button onClick={async () => {
 					if (!canvasRef.current) return;
 					const dataUrl = await canvasRef.current.exportImage("png");
@@ -125,7 +154,8 @@ export default function Home() {
 			</aside>
 
 			{/* LLM Response */}
-			<footer className="col-span-2 row-start-4 h-48 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-6 px-6">
+			<footer className="col-span-2 row-start-4 h-48 bg-zinc-100 dark:bg-zinc-900 overflow-y-auto px-6 py-4 text-sm">
+				{llmResponse ?? <span className="text-zinc-400">Response will appear here.</span>}
 			</footer>
 		</div>
 	);

@@ -12,6 +12,7 @@
     "@types/katex": "^0.16.8",
     "katex": "^0.16.33",
     "next": "16.1.6",
+    "openai": "^6.25.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-katex": "^3.1.0",
